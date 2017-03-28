@@ -1,0 +1,22 @@
+Package: MRCIEUGTEx
+Type: Package
+Title: Functions for the analysis of GTEx data
+Version: 0.1.0
+Author: Christopher Medway
+Maintainer: Christopher Medway <christophermedway@gmail.com>
+Description: Functions to aid the generation of polygenic risk scores in GTEX samples, and linear modelling in GTEx tissues
+License: MIT
+LazyData: TRUE
+RoxygenNote: 6.0.1
+Import: ggplot2,
+    pbapply,
+    MRInstruments,
+    TwoSampleMR,
+    SNPlocs.Hsapiens.dbSNP144.GRCh37,
+    VariantAnnotation,
+    org.Hs.eg.db,
+    RcppArmadillo
+Suggests: knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
