@@ -15,7 +15,8 @@ Import: ggplot2,
     SNPlocs.Hsapiens.dbSNP144.GRCh37,
     VariantAnnotation,
     org.Hs.eg.db,
-    RcppArmadillo
+    RcppArmadillo,
+    BSgenome
 Suggests: knitr,
     rmarkdown,
     testthat
