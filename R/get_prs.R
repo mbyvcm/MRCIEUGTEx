@@ -40,7 +40,8 @@ extract_query_snps_gtex <- function(rsids, gtex_vcf_dir) {
 # harmonise GTEx and query data and calculate polygenic risk score
 update_query_snp_genome_coordinats <- function(rsids) {
   message("getting genome coordinates for supplied rsids...")
-  snps_filter <- BSgenome::snpsById(SNPlocs.Hsapiens.dbSNP144.GRCh37, as.character(rsids), ifnotfound = 'drop')
+  refSNPs <- SNPlocs.Hsapiens.dbSNP144.GRCh37
+  snps_filter <- BSgenome::snpsById(refSNPs, as.character(rsids), ifnotfound = 'drop')
   snps_filter <- GenomeInfoDb::renameSeqlevels(snps_filter, GenomeInfoDb::mapSeqlevels(GenomeInfoDb::seqlevels(snps_filter),"NCBI"))
   return(snps_filter)
 }
