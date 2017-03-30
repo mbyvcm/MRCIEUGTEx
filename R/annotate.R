@@ -1,5 +1,5 @@
 
-#' Generate annotated list of top hits
+#' Returns transcripts surpassing given FDR threshold in each tissue
 #'
 #' @param x List object returned by "run_eQTL".
 #' @param fdr Should FDR be used.
@@ -91,42 +91,4 @@ add_gene_names <- function(ids) {
   output <- select(x = org.Hs.eg.db, columns = 'SYMBOL', keys = as.character(ids), keytype = 'ENSEMBL')
   # make one-to-one
   return(unlist(lapply(split(output, output$ENSEMBL), function(x) paste(x[,'SYMBOL'], collapse = ','))))
-}
-
-#' Returns transcripts surpassing given FDR threshold in each tissue
-#'
-#' @param x List object returned by "run_eQTL"
-#' @param fdr FDR threshold
-#' @return Data.frame of top hits
-#' @export
-extract_top_hits <- function(x, fdr) {
-
-  th <- lapply(x, function(x) {
-    x[p.adjust(x[,'p'], method = 'BH') <= fdr,]
-  })
-
-  th <- th[unlist(lapply(th, function(x) dim(x)[1] > 0))]
-
-  output <- lapply(names(th), function(x) {
-
-    tissue <- x
-    df     <- th[[tissue]]
-    tx     <- rownames(df)
-    txrfm  <- gsub(tx, pattern = '\\.\\d+', replacement = '')
-    symbol <- try(add_gene_names(ids = txrfm), silent = T)
-
-    # reorder symbol to conform to input
-    if (class(symbol) != "try-error") {
-      symbol <- symbol[match(txrfm, names(symbol))]
-    } else {symbol <- rep("NA", length(txrfm)); names(symbol) <- txrfm}
-
-    p      <- as.numeric(df[,'p'])
-    se     <- as.numeric(df[,'se'])
-    b      <- as.numeric(df[,'b'])
-
-    data.frame(tissue, tx, symbol, b, se, p, row.names = NULL)
-  })
-
-  return(do.call(rbind, output))
-
 }
