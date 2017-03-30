@@ -3,18 +3,18 @@
 #'
 #' @param x List object returned by "run_eQTL".
 #' @param fdr Should FDR be used.
-#' @param p.thresh Threshold for annotation gene names.
+#' @param pthresh Threshold for annotation gene names.
 #' @return Data.frame of genes passing threshold, annotated with gene names.
 #' @export
-extract_top_hits <- function(x, fdr = T, p.thresh = 0.05) {
+extract_top_hits <- function(x, fdr = T, pthresh = 0.05) {
 
   if (fdr != 1) {
     th <- lapply(x, function(x) {
-      x[x[,'p'] <= p.thresh,]
+      x[x[,'p'] <= pthresh,]
     })
   } else {
     th <- lapply(x, function(x) {
-      x[x[,'fdr'] <= p.thresh,]
+      x[x[,'fdr'] <= pthresh,]
     })
   }
 
