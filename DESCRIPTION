@@ -17,7 +17,8 @@ Depends: ggplot2,
     RcppArmadillo,
     BSgenome,
     Rsamtools,
-    SNPlocs.Hsapiens.dbSNP144.GRCh37
+    SNPlocs.Hsapiens.dbSNP144.GRCh37,
+    MatrixEQTL
 
 Suggests: knitr,
     rmarkdown,
