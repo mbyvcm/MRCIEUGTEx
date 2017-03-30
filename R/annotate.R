@@ -1,5 +1,5 @@
 
-#' Render volcanoe plot for each element in output list.
+#' Generate annotated list of top hits
 #'
 #' @param x List object returned by "run_eQTL".
 #' @param fdr Should FDR be used.
