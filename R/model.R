@@ -39,65 +39,96 @@ run_eqtl2 <- function(x, expression, geno, tx, restrict_coding = T) {
   }
 
   # read files
-  exp <- as.data.frame(t(read.table(exp_name, header = T, row.names = 1)))
-  cov <- as.data.frame(t(read.table(cov_name, header = T, row.names = 1)))
+  exp <- as.data.frame(read.table(exp_name, header = T, row.names = 1))
+  cov <- as.data.frame(read.table(cov_name, header = T, row.names = 1))
 
   # if tx argument included, filter transcripts
-  if (!(is.null(tx))) {exp <- exp[,tx]}
+  #if (!(is.null(tx))) {exp <- exp[,tx]}
 
   # if restricted argument TRUE, logical vector of which transcripts are
   # known protein coding
-  if (restrict_coding == T) {
-    message("  Restricting analysis to known, protein coding genes")
-    exp <- exp[,restrict_protein_coding(gtf_path = gtf_path, tx = names(exp))]
-  }
+  #if (restrict_coding == T) {
+  #  message("  Restricting analysis to known, protein coding genes")
+  #  exp <- exp[,restrict_protein_coding(gtf_path = gtf_path, tx = names(exp))]
+  #}
 
   # report basic stats
-  message(paste0("  Number of transcripts: ",dim(exp)[2]))
+  message(paste0("  Number of transcripts: ",dim(exp)[1]))
   Sys.sleep(1)
-  message(paste0("  Expression matrix samples: ",dim(exp)[1]))
+  message(paste0("  Expression matrix samples: ",dim(exp)[2]))
   Sys.sleep(1)
-  message(paste0("  Covariate matrix samples: ",dim(cov)[1]))
-
-  # exp and cov sampling should be the same
-  e <- rownames(exp)
-  c <- rownames(cov)
-
-  # merge PRS to covariates
-  cov$IID <- c
-  geno$IID <- gsub(geno$IID, pattern = '_', replacement = '.')
-  geno_cov <- merge(x = geno, y = cov, by = "IID")
+  message(paste0("  Covariate matrix samples: ",dim(cov)[2]))
 
   # ensure expression and covariate samples are in the same order
-  exp <- exp[e %in% geno_cov$IID,]
-  geno_cov <- geno_cov[geno_cov$IID %in% e,]
-  exp <- exp[order(rownames(exp)),]
-  geno_cov <- geno_cov[order(geno_cov$IID),]
+  if (length(names(exp)) != length(names(cov))) { stop("covariate and expression  matricies have different number of samples!")}
+  if (all(names(exp) != names(cov))) { stop("covariate and expression matricies have different sample order!")}
 
-  # error out if the order and/or lengty of samples in covariate and expression data is different
-  if (sum(rownames(exp) == geno_cov$IID) != length(rownames(exp))) {warning("expression and geno matrix mismatch!")}
+  # geno samples
+  genoIID <- gsub(geno$IID, pattern = '_', replacement = '.')
 
-  message(paste0("  Genotypes matrix samples: ",dim(geno_cov)[1]))
+  # write geno for samples in cov/exp
+  g <- geno[match(names(cov), genoIID),]
+  write.table(t(g),'./snps.txt', quote = F, row.names = F, col.names = F, sep = "\t")
 
-  # run regression
-  message("")
-  message("  Running model")
-
-  res <- pblapply(exp, runlm, geno_cov)
-  res <- do.call(rbind.data.frame, res)
-  names(res) <- c('b','se','p')
-  return(res)
+  df <- run_matrixEQTL(exp_name, cov_name)
+  return(df)
 }
 
 
-runlm <- function(x, g) {
+run_matrixEQTL <- function(exp_name, cov_name) {
 
-  model <- fastLm(as.matrix(g[,-1]), x)
-  sum   <- summary(model)
+  # SNP data
+  snps_file_name = "./snps.txt"
+  snps = SlicedData$new()
+  snps$fileDelimiter = "\t"
+  snps$fileOmitCharacters = "NA"
+  snps$fileSkipRows = 1
+  snps$fileSkipColumns = 0
+  snps$fileSliceSize = 2000
+  snps$LoadFile( snps_file_name )
 
-  pvalue <- coefficients(sum)["PRS","p.value"]
-  beta   <- coefficients(sum)["PRS","Estimate"]
-  se     <- coefficients(sum)["PRS","StdErr"]
+  # Covariate data
+  covariates_file_name = cov_name
+  cvrt = SlicedData$new()
+  cvrt$fileDelimiter = "\t"
+  cvrt$fileOmitCharacters = "NA"
+  cvrt$fileSkipRows = 1
+  cvrt$fileSkipColumns = 1
+  cvrt$fileSliceSize = 2000
+  cvrt$LoadFile(covariates_file_name)
 
-  return(c(beta,se,pvalue))
+  # Expression data
+  expression_file_name = exp_name
+  gene = SlicedData$new()
+  gene$fileDelimiter = "\t"
+  gene$fileOmitCharacters = "NA"
+  gene$fileSkipRows = 1
+  gene$fileSkipColumns = 1
+  gene$fileSliceSize = 2000
+  gene$LoadFile(expression_file_name)
+
+  output_file_name = tempfile()
+  useModel = modelLINEAR
+  pvOutputThreshold = 1
+  errorCovariance = numeric()
+
+  me <- Matrix_eQTL_engine(
+    snps = snps,
+    gene = gene,
+    cvrt = cvrt,
+    output_file_name = output_file_name,
+    pvOutputThreshold = pvOutputThreshold,
+    useModel = useModel,
+    errorCovariance = errorCovariance,
+    verbose = TRUE,
+    pvalue.hist = TRUE,
+    min.pv.by.genesnp = FALSE,
+    noFDRsaveMemory = FALSE)
+
+  tx  <- me$all$eqtls$gene
+  p   <- me$all$eqtls$pvalue
+  b   <- me$all$eqtls$beta
+  fdr <- me$all$eqtls$FDR
+
+  return(data.frame(tx, b, p, fdr, stringsAsFactors = F, row.names = 1))
 }

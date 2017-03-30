@@ -9,12 +9,11 @@ get_query_snps_mrbase <- function(outcomes,p) {
   return(TwoSampleMR::extract_instruments(outcomes = outcomes, p1 = p)[,c('SNP','effect_allele.exposure','other_allele.exposure','beta.exposure')])
 }
 
-# given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
-#' harmonise GTEx and query data and calculate polygenic risk score
+#' given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
 #'
 #' @param rsids Vector of dbSNP IDs.
 #' @param gtex_vcf_dif Path to GTEx VCF file.
-#' @return Data.frame: polygenic risk score calculated in GTEX samples.
+#' @return Data.frame: GTEx alleles matching query.
 #' @export
 extract_query_snps_gtex <- function(rsids, gtex_vcf_dir) {
 
@@ -47,7 +46,12 @@ update_query_snp_genome_coordinats <- function(rsids) {
 }
 
 
-# harmonise GTEx and query data and calculate polygenic risk score
+#' harmonise GTEx and query data and calculate polygenic risk score
+#'
+#' @param query Query data.frame.
+#' @param gtex GTEx data,frame.
+#' @return Data.frame: polygenic risk score calculated in GTEX samples.
+#' @export
 calculate_prs_gtex <- function(query, gtex) {
 
   message('calculating polygenic risk score...')

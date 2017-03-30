@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_prs.R
 \name{extract_query_snps_gtex}
 \alias{extract_query_snps_gtex}
-\title{harmonise GTEx and query data and calculate polygenic risk score}
+\title{given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF}
 \usage{
 extract_query_snps_gtex(rsids, gtex_vcf_dir)
 }
@@ -12,8 +12,8 @@ extract_query_snps_gtex(rsids, gtex_vcf_dir)
 \item{gtex_vcf_dif}{Path to GTEx VCF file.}
 }
 \value{
-Data.frame: polygenic risk score calculated in GTEX samples.
+Data.frame: GTEx alleles matching query.
 }
 \description{
-harmonise GTEx and query data and calculate polygenic risk score
+given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
 }

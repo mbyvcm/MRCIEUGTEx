@@ -2,18 +2,31 @@
 % Please edit documentation in R/annotate.R
 \name{extract_top_hits}
 \alias{extract_top_hits}
-\title{Returns transcripts surpassing given FDR threshold in each tissue}
+\alias{extract_top_hits}
+\title{Render volcanoe plot for each element in output list.}
 \usage{
+extract_top_hits(x, fdr)
+
 extract_top_hits(x, fdr)
 }
 \arguments{
 \item{x}{List object returned by "run_eQTL"}
 
+\item{fdr}{Should FDR be used.}
+
+\item{p.thresh}{Threshold for annotation gene names.}
+
+\item{x}{List object returned by "run_eQTL"}
+
 \item{fdr}{FDR threshold}
 }
 \value{
+Data.frame of genes passing threshold, annotated with gene names
+
 Data.frame of top hits
 }
 \description{
+Render volcanoe plot for each element in output list.
+
 Returns transcripts surpassing given FDR threshold in each tissue
 }
