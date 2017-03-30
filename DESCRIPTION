@@ -8,7 +8,7 @@ Description: Functions to aid the generation of polygenic risk scores in GTEX sa
 License: MIT
 LazyData: TRUE
 RoxygenNote: 6.0.1
-Import: ggplot2,
+Depends: ggplot2,
     pbapply,
     MRInstruments,
     TwoSampleMR,
@@ -16,8 +16,9 @@ Import: ggplot2,
     org.Hs.eg.db,
     RcppArmadillo,
     BSgenome,
-    Rsamtools
-Depends: SNPlocs.Hsapiens.dbSNP144.GRCh37
+    Rsamtools,
+    SNPlocs.Hsapiens.dbSNP144.GRCh37
+
 Suggests: knitr,
     rmarkdown,
     testthat
