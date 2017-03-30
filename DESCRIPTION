@@ -19,7 +19,6 @@ Depends: ggplot2,
     Rsamtools,
     SNPlocs.Hsapiens.dbSNP144.GRCh37,
     MatrixEQTL
-
 Suggests: knitr,
     rmarkdown,
     testthat
