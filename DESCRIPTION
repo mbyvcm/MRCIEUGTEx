@@ -12,11 +12,11 @@ Import: ggplot2,
     pbapply,
     MRInstruments,
     TwoSampleMR,
-    SNPlocs.Hsapiens.dbSNP144.GRCh37,
     VariantAnnotation,
     org.Hs.eg.db,
     RcppArmadillo,
     BSgenome
+Depends: SNPlocs.Hsapiens.dbSNP144.GRCh37
 Suggests: knitr,
     rmarkdown,
     testthat
