@@ -1,10 +1,10 @@
 
 #' Render volcanoe plot for each element in output list.
 #'
-#' @param x List object returned by "run_eQTL"
+#' @param x List object returned by "run_eQTL".
 #' @param fdr Should FDR be used.
 #' @param p.thresh Threshold for annotation gene names.
-#' @return Data.frame of genes passing threshold, annotated with gene names
+#' @return Data.frame of genes passing threshold, annotated with gene names.
 #' @export
 extract_top_hits <- function(x, fdr = T, p.thresh = 0.05) {
 

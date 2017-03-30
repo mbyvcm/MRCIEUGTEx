@@ -8,10 +8,9 @@ Description: Functions to aid the generation of polygenic risk scores in GTEX sa
 License: MIT
 LazyData: TRUE
 RoxygenNote: 6.0.1
+Imports: MRInstruments,
+    TwoSampleMR
 Depends: ggplot2,
-    pbapply,
-    MRInstruments,
-    TwoSampleMR,
     VariantAnnotation,
     org.Hs.eg.db,
     RcppArmadillo,
