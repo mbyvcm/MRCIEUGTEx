@@ -1,13 +1,12 @@
-
 #' generate set of "query" snps using MRBase
 #'
 #' @param outcomes MRBase outcome index.
 #' @param p Pvalue threshold on which to select SNPs.
 #' @return Data.frame of SNPs, betas and alleles.
-#' @export
 get_query_snps_mrbase <- function(outcomes,p) {
   return(TwoSampleMR::extract_instruments(outcomes = outcomes, p1 = p)[,c('SNP','effect_allele.exposure','other_allele.exposure','beta.exposure')])
 }
+
 
 #' given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
 #'
@@ -35,6 +34,7 @@ extract_query_snps_gtex <- function(rsids, gtex_vcf_dir) {
   message(paste0(length(df$rsids), " rsids available for PRS"))
   return(df)
 }
+
 
 # harmonise GTEx and query data and calculate polygenic risk score
 update_query_snp_genome_coordinats <- function(rsids) {

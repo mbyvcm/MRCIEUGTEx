@@ -9,6 +9,37 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r,}
+### Install Package 
+```{r, eval=FALSE}
+# requires devtools
+install.packages('devtools')
+library(devtools)
+
+# install package from github
+install_github("mbyvcm/MRCIEUGTEx", quiet = T)
+library(MRCIEUGTEx)
+```
+
+### Directories to GTEx data on RDSF
+```{r, eval=FALSE}
+# path to GTEx VCF file
+gtex_vcf_dir <- ""
+
+# path to expression & covariate tar directories downloaded from GTEx Portal 
+covariate_matrix_tar  <- ""
+expression_matrix_tar <- ""
+```
+
+The GTEx root directory on RDSF contains a config.R file which can be sourced to attach these path variables 
+
+```{r, eval=F}
+source('config.R')
+```
+
+### Format of input query SNPs
+
+Input data.frame containing four columns:SNP
+
+```{r, eval=FALSE}
 
 ```

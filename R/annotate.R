@@ -26,8 +26,7 @@ extract_top_hits <- function(x, fdr = T, pthresh = 0.05) {
     df     <- th[[tissue]]
     tx     <- rownames(df)
     txrfm  <- gsub(tx, pattern = '\\.\\d+', replacement = '')
-    symbol <- try(add_gene_names(ids = txrfm), silent = T)
-
+    symbol <- try(add_gene_names(ids = txrfm),
     # reorder symbol to conform to input
     if (class(symbol) != "try-error") {
       symbol <- symbol[match(txrfm, names(symbol))]
