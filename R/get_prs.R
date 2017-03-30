@@ -22,7 +22,7 @@ extract_query_snps_gtex <- function(rsids, gtex_vcf_dir) {
   query_snps_granges <- update_query_snp_genome_coordinats(rsids)
   genome(query_snps_granges) <- "hg19"
 
-  tabix_file <- TabixFile(gtex_vcf_dir)
+  tabix_file <- Rsamtools::TabixFile(gtex_vcf_dir)
   vcf <- readVcf(tabix_file, "hg19", query_snps_granges)
 
   rsids <- mcols(query_snps_granges)$RefSNP_id[subjectHits(findOverlaps(rowRanges(vcf), query_snps_granges))]
