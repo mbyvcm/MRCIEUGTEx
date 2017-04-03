@@ -2,12 +2,12 @@
 % Please edit documentation in R/get_prs.R
 \name{extract_query_snps_gtex}
 \alias{extract_query_snps_gtex}
-\title{given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF}
+\title{Given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF}
 \usage{
 extract_query_snps_gtex(rsids, gtex_vcf_dir)
 }
 \arguments{
-\item{rsids}{Vector of dbSNP IDs.}
+\item{rsids}{Vector of SNPs in dbSNP format.}
 
 \item{gtex_vcf_dif}{Path to GTEx VCF file.}
 }
@@ -15,5 +15,5 @@ extract_query_snps_gtex(rsids, gtex_vcf_dir)
 Data.frame: GTEx alleles matching query.
 }
 \description{
-given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
+Given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
 }

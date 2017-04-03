@@ -7,9 +7,9 @@
 calculate_prs_gtex(query, gtex)
 }
 \arguments{
-\item{query}{Query data.frame.}
+\item{query}{Data.frame of "query" SNPs.}
 
-\item{gtex}{GTEx data,frame.}
+\item{gtex}{Data.frame og GTEx SNPs.}
 }
 \value{
 Data.frame: polygenic risk score calculated in GTEX samples.

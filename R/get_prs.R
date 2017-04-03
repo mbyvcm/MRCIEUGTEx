@@ -8,30 +8,43 @@ get_query_snps_mrbase <- function(outcomes,p) {
 }
 
 
-#' given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
+#' Given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
 #'
-#' @param rsids Vector of dbSNP IDs.
+#' @param rsids Vector of SNPs in dbSNP format.
 #' @param gtex_vcf_dif Path to GTEx VCF file.
 #' @return Data.frame: GTEx alleles matching query.
 #' @export
 extract_query_snps_gtex <- function(rsids, gtex_vcf_dir) {
 
+  # check inputs exist
+  if(is.null(rsids)) {stop("rsids argument required!")}
+  if(is.null(rsids)) {stop("gtex_vcf_dir argument required!")}
+
   message(paste0("reading ",length(rsids)," rsids..."))
 
+  # warning if rsids are not in dbSNP format
+  if (all(grepl(x = rsids, pattern = '^rs\\d+')) == 0) {warning('Not all rsids are in dbSNP format - these will be ignored!')}
+
+  # get base-pair coordinates for SNPs using function - returned as GRanges object
   query_snps_granges <- update_query_snp_genome_coordinats(rsids)
+  # ensure the 'bulid' format coforms to hg19
   genome(query_snps_granges) <- "hg19"
 
+  # load tabix index for GTEx VCF
   tabix_file <- Rsamtools::TabixFile(gtex_vcf_dir)
+  # extract query ranges
   vcf <- VariantAnnotation::readVcf(tabix_file, "hg19", query_snps_granges)
-
+  # extract rsids from metadata
   rsids <- mcols(query_snps_granges)$RefSNP_id[subjectHits(findOverlaps(rowRanges(vcf), query_snps_granges))]
 
+  # assembl output data.frame
   dose_alt_allele <- geno(vcf)$DS
   type_alt_allele <- as.character(CharacterList(alt(vcf)))
   type_ref_allele <- as.character(ref(vcf))
-
   df <- data.frame(rsids, type_ref_allele, type_alt_allele, dose_alt_allele, stringsAsFactors = F)
+
   message(paste0(length(df$rsids), " rsids available for PRS"))
+
   return(df)
 }
 
@@ -48,11 +61,15 @@ update_query_snp_genome_coordinats <- function(rsids) {
 
 #' harmonise GTEx and query data and calculate polygenic risk score
 #'
-#' @param query Query data.frame.
-#' @param gtex GTEx data,frame.
+#' @param query Data.frame of "query" SNPs.
+#' @param gtex Data.frame og GTEx SNPs.
 #' @return Data.frame: polygenic risk score calculated in GTEX samples.
 #' @export
 calculate_prs_gtex <- function(query, gtex) {
+
+  # check inputs exist
+  if(is.null(query)) {stop("data.frame of query SNPs required!")}
+  if(is.null(gtex)) {stop("data.frame of GTEx SNPs required!")}
 
   message('calculating polygenic risk score...')
 
