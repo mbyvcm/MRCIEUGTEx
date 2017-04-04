@@ -1,52 +1,45 @@
 # GTEx polygenic risk score pipeline for approved MRC-IEU users  
 
-These scripts have not yet been formalised into an R package, so the user will have to ensure that the other R packages, on which this pipeline depends, are installed locally:
+## Installing Package
+
+### install devtools
+```{r,}
+install.packages('devtools')
+library(devtools)
+```
+### install package from github
+```{r,}
+install_github("mbyvcm/MRCIEUGTEx", quiet = T)
+library(MRCIEUGTEx)
+```
+## Adding directories to GTEx data on RDSF
+
+These can be added manually if you know where GTEx files can be found on RDSF:
 
 ```{r,}
-library(pbapply)
-library(MRInstruments)
-library(TwoSampleMR)
-library(SNPlocs.Hsapiens.dbSNP144.GRCh37)
-library(VariantAnnotation)
-library(org.Hs.eg.db)
-library(ggplot2)
+# path to GTEx VCF file
+gtex_vcf_dir <- ""
+# path to expression & covariate tar directories downloaded from GTEx Portal 
+covariate_matrix_tar  <- ""
+expression_matrix_tar <- ""
 ```
+alternitivly the GTEx directory on RDSF (should) contain a config.R file which can be sourced to attach these path variables:
 
-The GTEx data on RDSF is accessible to approved users. For security reasons the absolute directories of the various files required for this pipeline are not listed here. However, with the GTEx directory on RDSF there will be a config.R file which can be sourced in R:
-
-```{r, config}
+```{r,}
 source('config.R')
 ```
-The config file defines three directories;
-
-+ "gtex_vcf_dir": path to the imputed, filtered GTEx genotypes in VCF format
-+ "covariate_matrix_obj": a precomputed R matrix of covariates per sample
-  + first three principle components
-  + fifteen PEER factors [https://github.com/PMBio/peer]
-  + array and sex variables
-+ "expression_matrix_obj": a precomputed R matrix of normalized expression
-
-"covariate_matrix_obj" and "expression_matrix_obj" are R objects that have been generated from CSV matrices downloaded from the GTEx Portal here:
+"covariate_matrix_tar" and "expression_matrix_tar" are matricies that contain normalised, QC'd data and are downloadable from the GTEx Portal here:
 
 http://www.gtexportal.org/static/datasets/gtex_analysis_v6/single_tissue_eqtl_data/GTEx_Analysis_V6_eQTLInputFiles_geneLevelNormalizedExpressionMatrices.tar.gz
 
 http://www.gtexportal.org/static/datasets/gtex_analysis_v6/single_tissue_eqtl_data/GTEx_Analysis_V6_eQTLInputFiles_covariates.tar.gz
 
-see the collect_metadata_from_gtexportal() function for the code used to generate these objects. 
-
 
 ### Running the pipeline
 
-Load the functions
+In order to generate a polygenic risk score, a data.frame of "query" SNP IDs (dbSNP) are required, along with the beta, effect allele and non-effect allele. The "TwoSampleMR" [https://mrcieu.github.io/TwoSampleMR/] R package can be used to generate this dataframe for a given outcome and a p-value threshold.   
 
-```{r, setup}
-source('IEU_GTEx_pipeline.R')
-```
-In order to generate a polygenic risk score, a data.frame of "query" SNP IDs (dbSNP) are required, along with the beta, effect allele and non-effect allele. The "TwoSampleMR" [https://mrcieu.github.io/TwoSampleMR/] R package can be used to generate this dataframe for a given outcome and a p-value threshols using a wrapper function:   
 
-```{r, query snps}
-mrbase_query_snps <- get_query_snps_mrbase(outcomes = 297, p = 5e-08)
-```
 
 Extract 'query' SNPs from GTEx VCF files:
 
