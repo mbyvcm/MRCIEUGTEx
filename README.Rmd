@@ -1,4 +1,4 @@
-# GTEx polygenic risk score pipeline for approved MRC-IEU users  
+### GTEx polygenic risk score pipeline for approved MRC-IEU users  
 
 ## Installing Package
 
