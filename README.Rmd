@@ -2,13 +2,15 @@
 
 ### Installing Package
 
-### install devtools
+
 ```{r,}
+# install devtools
 install.packages('devtools')
 library(devtools)
 ```
-### install package from github
+
 ```{r,}
+# install package from github
 install_github("mbyvcm/MRCIEUGTEx", quiet = T)
 library(MRCIEUGTEx)
 ```
