@@ -95,8 +95,8 @@ calculate_prs_gtex <- function(query_data_frame, gtex_data_frame) {
   #query <- rbind(ea, oa)
 
   ## hamonise gtex data with query
-  gtex_meta <- gtex[,1:3]
-  mer <- merge(gtex_meta, query, all.x = T, by.x = 'rsids', by.y = 'SNP')
+  gtex_meta <- gtex_data_frame[,1:3]
+  mer <- merge(gtex_meta, query_data_frame, all.x = T, by.x = 'rsids', by.y = 'SNP')
 
   mer <- strand_issues(mer)
 
@@ -105,7 +105,7 @@ calculate_prs_gtex <- function(query_data_frame, gtex_data_frame) {
   alt$allele <- "alt"
   ref$allele <- "ref"
   df <- rbind(alt,ref)
-  df <- merge(x = df, y = gtex, by.x = "rsids")
+  df <- merge(x = df, y = gtex_data_frame, by.x = "rsids")
 
   # reformat sampleid
   is_sample <- grep(names(df), pattern = '^GTEX')
