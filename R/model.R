@@ -1,7 +1,7 @@
 
 #' Run linear models
 #'
-#' @param geno Data.frame of GTEx polygenic risk scores.
+#' @param geno Data.frame (or list of data.frames) of GTEx polygenic risk scores.
 #' @param tissue Vector of tissues to be tested.
 #' @param tx Vector of transcripts to be tested.
 #' @param restrict.coding if TRUE (default) ignores non-coding transcripts.
@@ -63,19 +63,45 @@ run_eqtl2 <- function(x, expression, geno, tx, restrict_coding = T) {
   if (length(names(exp)) != length(names(cov))) { stop("covariate and expression  matricies have different number of samples!")}
   if (all(names(exp) != names(cov))) { stop("covariate and expression matricies have different sample order!")}
 
-  # geno samples
-  genoIID <- gsub(geno$IID, pattern = '_', replacement = '.')
+  # Load covariate data matrixEQTL
+  covariates_file_name = cov_name
+  cvrt = SlicedData$new()
+  cvrt$fileDelimiter = "\t"
+  cvrt$fileOmitCharacters = "NA"
+  cvrt$fileSkipRows = 1
+  cvrt$fileSkipColumns = 1
+  cvrt$fileSliceSize = 2000
+  cvrt$LoadFile(covariates_file_name)
 
-  # write geno for samples in cov/exp
-  g <- geno[match(names(cov), genoIID),]
-  write.table(t(g),'./snps.txt', quote = F, row.names = F, col.names = F, sep = "\t")
+  # Load expression data matrixEQTL
+  expression_file_name = exp_name
+  gene = SlicedData$new()
+  gene$fileDelimiter = "\t"
+  gene$fileOmitCharacters = "NA"
+  gene$fileSkipRows = 1
+  gene$fileSkipColumns = 1
+  gene$fileSliceSize = 2000
+  gene$LoadFile(expression_file_name)
 
-  df <- run_matrixEQTL(exp_name, cov_name)
-  return(df)
+  ret <- lapply(geno, function(prs) {
+
+    # geno samples
+    prsIID <- gsub(prs$IID, pattern = '_', replacement = '.')
+
+    # write geno for samples in cov/exp
+    g <- prs[match(names(cov), prsIID),]
+    write.table(t(g),'./snps.txt', quote = F, row.names = F, col.names = F, sep = "\t")
+
+    df <- run_matrixEQTL(exp_name, cov_name)
+    return(df)
+    })
+
+  names(ret) <- names(geno)
+  return(ret)
 }
 
 
-run_matrixEQTL <- function(exp_name, cov_name) {
+run_matrixEQTL <- function(gene,cvrt) {
 
   # SNP data
   snps_file_name = "./snps.txt"
@@ -86,26 +112,6 @@ run_matrixEQTL <- function(exp_name, cov_name) {
   snps$fileSkipColumns = 0
   snps$fileSliceSize = 2000
   snps$LoadFile( snps_file_name )
-
-  # Covariate data
-  covariates_file_name = cov_name
-  cvrt = SlicedData$new()
-  cvrt$fileDelimiter = "\t"
-  cvrt$fileOmitCharacters = "NA"
-  cvrt$fileSkipRows = 1
-  cvrt$fileSkipColumns = 1
-  cvrt$fileSliceSize = 2000
-  cvrt$LoadFile(covariates_file_name)
-
-  # Expression data
-  expression_file_name = exp_name
-  gene = SlicedData$new()
-  gene$fileDelimiter = "\t"
-  gene$fileOmitCharacters = "NA"
-  gene$fileSkipRows = 1
-  gene$fileSkipColumns = 1
-  gene$fileSliceSize = 2000
-  gene$LoadFile(expression_file_name)
 
   output_file_name = tempfile()
   useModel = modelLINEAR

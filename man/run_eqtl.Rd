@@ -7,7 +7,7 @@
 run_eqtl(geno, tissue, tx = NULL, restrict_coding = T)
 }
 \arguments{
-\item{geno}{Data.frame of GTEx polygenic risk scores.}
+\item{geno}{Data.frame (or list of data.frames) of GTEx polygenic risk scores.}
 
 \item{tissue}{Vector of tissues to be tested.}
 
