@@ -37,20 +37,25 @@ http://www.gtexportal.org/static/datasets/gtex_analysis_v6/single_tissue_eqtl_da
 
 ### Running the pipeline
 
-In order to generate a polygenic risk score, a data.frame of "query" SNP IDs (dbSNP) are required, along with the beta, effect allele and non-effect allele. The "TwoSampleMR" [https://mrcieu.github.io/TwoSampleMR/] R package can be used to generate this dataframe for a given outcome and a p-value threshold.   
+In order to generate a polygenic risk score, a "query data.frame" containg information for the sentinel SNPs are required.
 
+SNP|effect.allele|other.allele|beta
+---|---|---|---
+rs123|A|C|0.136
+rs456|G|A|-0.324
 
+The "TwoSampleMR" [https://mrcieu.github.io/TwoSampleMR/] R package can be used to generate this dataframe for a given outcome and a p-value threshold.   
 
 Extract 'query' SNPs from GTEx VCF files:
 
 ```{r,}
-gtex_query <- extract_query_snps_gtex(rsids = mrbase_query_snps$SNP, gtex_vcf_dir = gtex_vcf_dir)
+gtex_query <- extract_query_snps_gtex(query_data_frame = df, gtex_vcf_dir = gtex_vcf_dir)
 ```
 
 Calculate the polygenic risk score:
 
 ```{r,}
-geno <- calculate_prs_gtex(query = mrbase_query_snps, gtex = gtex_query)
+geno <- calculate_prs_gtex(query_data_frame = df, gtex_data_frame = gtex_query)
 ```
 
 Expression and covariate matricies have been downloaded from the GTEx portal and saved as an R object on RDSF. This object contains fully normalised and filtered expression values for each tissue, using the same protochol used by the GTEx consortium. The covariate matrix include the following; array, sex, 3 PCs and 15 PEER componants. See Aguet et al 2016 (https://doi.org/10.1101/074450) for more information on these data.
@@ -58,14 +63,13 @@ Expression and covariate matricies have been downloaded from the GTEx portal and
 Load covariate and expression objects:
 
 ```{r,}
-exp_cov_list <- source_expression_covar_lists(covar = covariate_matrix_obj, expression = expression_matrix_obj)
+
 ```
 
 Make a character vector of the tissues you want to analyse:
 
 ```{r,}
-tissues <- names(exp_cov_list)
-tissue <- tissues[grep(x = tissues, pattern = 'Brain')]
+
 ```
 
 RuneQTL analysis
