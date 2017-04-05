@@ -1,6 +1,6 @@
 ### GTEx polygenic risk score pipeline for approved MRC-IEU users  
 
-## Installing Package
+### Installing Package
 
 ### install devtools
 ```{r,}
@@ -12,7 +12,7 @@ library(devtools)
 install_github("mbyvcm/MRCIEUGTEx", quiet = T)
 library(MRCIEUGTEx)
 ```
-## Adding directories to GTEx data on RDSF
+### Adding directories to GTEx data on RDSF
 
 These can be added manually if you know where GTEx files can be found on RDSF:
 
