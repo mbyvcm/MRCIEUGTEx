@@ -85,16 +85,16 @@ run_eqtl2 <- function(x, expression, geno, tx, restrict_coding = T) {
 
   ret <- lapply(names(geno), function(prs) {
 
-    geno <- geno[[prs]]
+    gen <- geno[[prs]]
 
     # geno samples
-    genoIID <- gsub(geno$IID, pattern = '_', replacement = '.')
+    genIID <- gsub(gen$IID, pattern = '_', replacement = '.')
 
     # write geno for samples in cov/exp
-    g <- geno[match(names(cov), genoIID),]
+    g <- gen[match(names(cov), genIID),]
     write.table(t(g),'./snps.txt', quote = F, row.names = F, col.names = F, sep = "\t")
 
-    df <- run_matrixEQTL(exp_name, cov_name)
+    df <- run_matrixEQTL(gene, cvrt)
     return(df)
     })
 
