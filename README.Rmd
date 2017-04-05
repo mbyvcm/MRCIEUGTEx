@@ -1,0 +1,82 @@
+### GTEx polygenic risk score pipeline for approved MRC-IEU users  
+
+## Installing Package
+
+### install devtools
+```{r,}
+install.packages('devtools')
+library(devtools)
+```
+### install package from github
+```{r,}
+install_github("mbyvcm/MRCIEUGTEx", quiet = T)
+library(MRCIEUGTEx)
+```
+## Adding directories to GTEx data on RDSF
+
+These can be added manually if you know where GTEx files can be found on RDSF:
+
+```{r,}
+# path to GTEx VCF file
+gtex_vcf_dir <- ""
+# path to expression & covariate tar directories downloaded from GTEx Portal 
+covariate_matrix_tar  <- ""
+expression_matrix_tar <- ""
+```
+alternitivly the GTEx directory on RDSF (should) contain a config.R file which can be sourced to attach these path variables:
+
+```{r,}
+source('config.R')
+```
+"covariate_matrix_tar" and "expression_matrix_tar" are matricies that contain normalised, QC'd data and are downloadable from the GTEx Portal here:
+
+http://www.gtexportal.org/static/datasets/gtex_analysis_v6/single_tissue_eqtl_data/GTEx_Analysis_V6_eQTLInputFiles_geneLevelNormalizedExpressionMatrices.tar.gz
+
+http://www.gtexportal.org/static/datasets/gtex_analysis_v6/single_tissue_eqtl_data/GTEx_Analysis_V6_eQTLInputFiles_covariates.tar.gz
+
+
+### Running the pipeline
+
+In order to generate a polygenic risk score, a data.frame of "query" SNP IDs (dbSNP) are required, along with the beta, effect allele and non-effect allele. The "TwoSampleMR" [https://mrcieu.github.io/TwoSampleMR/] R package can be used to generate this dataframe for a given outcome and a p-value threshold.   
+
+
+
+Extract 'query' SNPs from GTEx VCF files:
+
+```{r,}
+gtex_query <- extract_query_snps_gtex(rsids = mrbase_query_snps$SNP, gtex_vcf_dir = gtex_vcf_dir)
+```
+
+Calculate the polygenic risk score:
+
+```{r,}
+geno <- calculate_prs_gtex(query = mrbase_query_snps, gtex = gtex_query)
+```
+
+Expression and covariate matricies have been downloaded from the GTEx portal and saved as an R object on RDSF. This object contains fully normalised and filtered expression values for each tissue, using the same protochol used by the GTEx consortium. The covariate matrix include the following; array, sex, 3 PCs and 15 PEER componants. See Aguet et al 2016 (https://doi.org/10.1101/074450) for more information on these data.
+
+Load covariate and expression objects:
+
+```{r,}
+exp_cov_list <- source_expression_covar_lists(covar = covariate_matrix_obj, expression = expression_matrix_obj)
+```
+
+Make a character vector of the tissues you want to analyse:
+
+```{r,}
+tissues <- names(exp_cov_list)
+tissue <- tissues[grep(x = tissues, pattern = 'Brain')]
+```
+
+RuneQTL analysis
+
+Leave the "tx" argument out if you want to analyse all transcripts. Likewise, ignore the tissue argument if ypou wish to analyse all tissues: 
+
+```{r,}
+results <- run_eqtl(geno = geno, expression = exp_cov_list, tissue = tissue, tx = 1:500)
+```
+Render volcanoe plots with gene symbols added to significant genes:
+
+```{r, annotation}
+vp <- volcanoeplot(output, fdr = 0.05, outdir = '../../output/BMI/')
+```
