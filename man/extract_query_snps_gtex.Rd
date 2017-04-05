@@ -7,7 +7,7 @@
 extract_query_snps_gtex(query_data_frame, gtex_vcf_dir)
 }
 \arguments{
-\item{query}{Data.frame with four columns: 'SNP','effect_allele','other_allele','beta'.}
+\item{query_data_frame}{Data.frame with four columns: 'SNP','effect_allele','other_allele','beta'.}
 
 \item{gtex_vcf_dif}{Path to GTEx VCF file.}
 }

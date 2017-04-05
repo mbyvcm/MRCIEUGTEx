@@ -10,7 +10,7 @@ get_query_snps_mrbase <- function(outcomes,p) {
 
 #' Given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
 #'
-#' @param query Data.frame with four columns: 'SNP','effect_allele','other_allele','beta'.
+#' @param query_data_frame Data.frame with four columns: 'SNP','effect_allele','other_allele','beta'.
 #' @param gtex_vcf_dif Path to GTEx VCF file.
 #' @return Data.frame: GTEx alleles matching query.
 #' @export
@@ -21,7 +21,7 @@ extract_query_snps_gtex <- function(query_data_frame, gtex_vcf_dir) {
   if(is.null(gtex_vcf_dir)) {stop("gtex_vcf_dir argument required!")}
 
   # check query is data.frame with expected headers
-  if(!(is.data.frame(query_data_frame))) {stop("query need to be a data.frame!")}
+  if(!(is.data.frame(query_data_frame))) {stop("query_data_frame need to be a data.frame!")}
   if(!(all(names(query_data_frame) == c("SNP","effect_allele","other_allele","beta")))) {stop("query_data_frame headers must be 'SNP','effect_allele','other_allele','beta'")}
 
   rsids <- query_data_frame$SNP
@@ -67,15 +67,21 @@ update_query_snp_genome_coordinats <- function(rsids) {
 
 #' harmonise GTEx and query data and calculate polygenic risk score
 #'
-#' @param query Data.frame of "query" SNPs.
-#' @param gtex Data.frame og GTEx SNPs.
+#' @param query_data_frame Data.frame with four columns: 'SNP','effect_allele','other_allele','beta'.
+#' @param gtex_data_frame Returned by extract_query_snps_gtex function
 #' @return Data.frame: polygenic risk score calculated in GTEX samples.
 #' @export
-calculate_prs_gtex <- function(query, gtex) {
+calculate_prs_gtex <- function(query_data_frame, gtex_data_frame) {
 
   # check inputs exist
-  if(is.null(query)) {stop("data.frame of query SNPs required!")}
-  if(is.null(gtex)) {stop("data.frame of GTEx SNPs required!")}
+  if(is.null(query_data_frame)) {stop("data.frame of query SNPs required!")}
+  if(is.null(gtex_data_frame)) {stop("data.frame of GTEx SNPs required!")}
+
+  # check query is data.frame with expected headers
+  if(!(is.data.frame(query_data_frame))) {stop("query_data_frame needs to be a data.frame class!")}
+  if(!(is.data.frame(gtex_data_frame))) {stop("gtex_data_frame needs to be a data.frame class!")}
+
+  if(!(all(names(query_data_frame) == c("SNP","effect_allele","other_allele","beta")))) {stop("query_data_frame headers must be 'SNP','effect_allele','other_allele','beta'")}
 
   message('calculating polygenic risk score...')
 

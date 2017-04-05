@@ -4,12 +4,12 @@
 \alias{calculate_prs_gtex}
 \title{harmonise GTEx and query data and calculate polygenic risk score}
 \usage{
-calculate_prs_gtex(query, gtex)
+calculate_prs_gtex(query_data_frame, gtex_data_frame)
 }
 \arguments{
-\item{query}{Data.frame of "query" SNPs.}
+\item{query_data_frame}{Data.frame with four columns: 'SNP','effect_allele','other_allele','beta'.}
 
-\item{gtex}{Data.frame og GTEx SNPs.}
+\item{gtex_data_frame}{Returned by extract_query_snps_gtex function}
 }
 \value{
 Data.frame: polygenic risk score calculated in GTEX samples.
