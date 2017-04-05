@@ -10,19 +10,21 @@ get_query_snps_mrbase <- function(outcomes,p) {
 
 #' Given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF
 #'
-#' @param query Data.frame.
+#' @param query Data.frame with four columns: 'SNP','effect_allele','other_allele','beta'.
 #' @param gtex_vcf_dif Path to GTEx VCF file.
 #' @return Data.frame: GTEx alleles matching query.
 #' @export
-extract_query_snps_gtex <- function(query, gtex_vcf_dir) {
+extract_query_snps_gtex <- function(query_data_frame, gtex_vcf_dir) {
 
   # check inputs exist
-  if(is.null(rsids)) {stop("rsids argument required!")}
-  if(is.null(rsids)) {stop("gtex_vcf_dir argument required!")}
+  if(is.null(query_data_frame)) {stop("rsids argument required!")}
+  if(is.null(gtex_vcf_dir)) {stop("gtex_vcf_dir argument required!")}
 
   # check query is data.frame with expected headers
-  if(!(is.data.frame(query))) {stop("query need to be a data.frame!")}
-  if(!(all(names(mrbase_query_snps) == c("SNP","effect_allele","other_allele","beta")))) {stop("query headers must be 'SNP','effect_allele','other_allele','beta'")}
+  if(!(is.data.frame(query_data_frame))) {stop("query need to be a data.frame!")}
+  if(!(all(names(query_data_frame) == c("SNP","effect_allele","other_allele","beta")))) {stop("query_data_frame headers must be 'SNP','effect_allele','other_allele','beta'")}
+
+  rsids <- query_data_frame$SNP
 
   message(paste0("reading ",length(rsids)," rsids..."))
 

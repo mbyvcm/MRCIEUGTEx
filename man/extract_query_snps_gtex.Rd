@@ -4,10 +4,10 @@
 \alias{extract_query_snps_gtex}
 \title{Given a set of dbSNP rsids, get genome coordinates (hg19) and extract these ranges from GTEx VCF}
 \usage{
-extract_query_snps_gtex(query, gtex_vcf_dir)
+extract_query_snps_gtex(query_data_frame, gtex_vcf_dir)
 }
 \arguments{
-\item{query}{Data.frame.}
+\item{query}{Data.frame with four columns: 'SNP','effect_allele','other_allele','beta'.}
 
 \item{gtex_vcf_dif}{Path to GTEx VCF file.}
 }
