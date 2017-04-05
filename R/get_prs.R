@@ -100,8 +100,8 @@ calculate_prs_gtex <- function(query_data_frame, gtex_data_frame) {
 
   mer <- strand_issues(mer)
 
-  alt <- mer[mer$effect_allele.exposure == mer$type_alt_allele, c('rsids','beta.exposure')]
-  ref <- mer[mer$effect_allele.exposure == mer$type_ref_allele, c('rsids','beta.exposure')]
+  alt <- mer[mer$effect_allele == mer$type_alt_allele, c('rsids','beta')]
+  ref <- mer[mer$effect_allele == mer$type_ref_allele, c('rsids','beta')]
   alt$allele <- "alt"
   ref$allele <- "ref"
   df <- rbind(alt,ref)
@@ -124,8 +124,8 @@ calculate_prs_gtex <- function(query_data_frame, gtex_data_frame) {
 # identify SNPs where the alleles in the query are not both found in GTEx. The order (ref, alt) does not matter.
 strand_issues <- function(mer) {
 
-  exp <- mer$effect_allele.exposure == mer$type_alt_allele | mer$effect_allele.exposure == mer$type_ref_allele
-  other <- mer$other_allele.exposure == mer$type_alt_allele | mer$other_allele.exposure == mer$type_ref_allele
+  exp <- mer$effect_allele == mer$type_alt_allele | mer$effect_allele == mer$type_ref_allele
+  other <- mer$other_allele == mer$type_alt_allele | mer$other_allele == mer$type_ref_allele
   return(mer[exp&other,])
 }
 
@@ -133,7 +133,7 @@ strand_issues <- function(mer) {
 # Calculate PRS
 calculatePRS <- function(x, df) {
   geno   <- df[,x]
-  beta   <- df[,'beta.exposure']
+  beta   <- df[,'beta']
   allele <- df[,'allele']
   prs <- 1/length(geno) * (
     sum(sum(geno[allele == "alt"] * beta[allele == "alt"]),
