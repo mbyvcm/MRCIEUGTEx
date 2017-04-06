@@ -75,8 +75,8 @@ Extract 'top hits'
 tophits <- extract_top_hits(x = output, fdr = T, pthresh = 0.05)
 ```
 
-Render volcanoe plots with gene symbols added to significant genes:
+Render volcano plots with gene symbols added to significant genes:
 
 ```{r, annotation}
-vp <- volcanoeplot(output, fdr = T, pthresh = 0.05)
+vp <- volcanoplot(output, fdr = T, pthresh = 0.05)
 ```
