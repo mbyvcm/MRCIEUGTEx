@@ -3,6 +3,7 @@
 #' @param outcomes MRBase outcome index.
 #' @param p Pvalue threshold on which to select SNPs.
 #' @return Data.frame of SNPs, betas and alleles.
+#' @export
 get_query_snps_mrbase <- function(outcomes,p) {
   return(TwoSampleMR::extract_instruments(outcomes = outcomes, p1 = p)[,c('SNP','effect_allele.exposure','other_allele.exposure','beta.exposure')])
 }

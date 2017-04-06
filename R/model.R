@@ -15,7 +15,8 @@ run_eqtl <- function(geno, tissue, tx = NULL, restrict_coding = T) {
 
   res <- lapply(tissue, run_eqtl2, geno = geno, tx = tx, restrict_coding = restrict_coding)
   names(res) <- tissue
-  return(res)
+
+  return(list('prs' = geno, 'models' = res))
 }
 
 
