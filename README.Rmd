@@ -24,7 +24,7 @@ gtex_vcf_dir <- ""
 covariate_matrix_tar  <- ""
 expression_matrix_tar <- ""
 ```
-alternitivly the GTEx directory on RDSF (should) contain a config.R file which can be sourced to attach these path variables:
+alternatively the GTEx directory on RDSF (should) contain a config.R file which can be sourced to attach these path variables:
 
 ```{r,}
 source('config.R')
