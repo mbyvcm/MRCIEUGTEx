@@ -8,7 +8,7 @@
 #' @export
 extract_top_hits <- function(x, fdr = T, pthresh = 0.05) {
 
-  x <- do.call(rbind,unlist(output[['models']], recursive = F))
+  x <- do.call(rbind,unlist(x[['models']], recursive = F))
 
   if (fdr != 1) {
     th <- x[x$p <= pthresh,]
