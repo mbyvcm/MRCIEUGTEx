@@ -41,20 +41,22 @@ extract_top_hits <- function(x, fdr = T, pthresh = 0.05) {
 #' Render volcanoe plot for each element in output list.
 #'
 #' @param x List object returned by "run_eQTL"
-#' @param fdr Should FDR be used.
-#' @param p.thresh Threshold for annotation gene names.
-#' @param outdir Output directory for plots.
+#' @param fdr Should FDR corrected p-values be used for annotation.
+#' @param p.thresh Threshold for adding gene name label.
 #' @return volcanoe plots
 #' @export
-volcanoeplot <- function(x, fdr = T, p.thresh = 0.05, outdir = '../../output/') {
+volcanoeplot <- function(x, fdr = T, p.thresh = 0.05) {
 
-  tissues <- names(x)
+  x <- unlist(x[['models']], recursive = F)
 
-  lapply(tissues, function(tissue) {
+  lapply(names(x), function(name) {
 
-    message(paste0("volcanoe plot ", tissue))
+    tissue <- gsub(name, pattern = "(^\\S+)\\.(\\S+)", replacement = "\\1")
+    trait  <- gsub(name, pattern = "(^\\S+)\\.(\\S+)", replacement = "\\2")
 
-    df  <- x[[tissue]]
+    message(paste0("volcanoe plot: ", tissue,"", trait))
+
+    df  <- x[[name]]
     row.names(df) <- gsub(row.names(df), pattern = '\\.\\d+', replacement = '')
 
     if (fdr != 1) {
@@ -75,7 +77,6 @@ volcanoeplot <- function(x, fdr = T, p.thresh = 0.05, outdir = '../../output/') 
       theme(legend.position="none") +
       ggtitle(paste0(tissue,":",p.thresh))
 
-    ggsave(filename = paste0(outdir,"_",tissue,"_VOL.pdf"), plot = plot, device = 'pdf')
     return(plot)
   })
 }
