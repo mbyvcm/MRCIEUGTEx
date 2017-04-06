@@ -8,40 +8,36 @@
 #' @export
 extract_top_hits <- function(x, fdr = T, pthresh = 0.05) {
 
+  x <- do.call(rbind,unlist(output[['models']], recursive = F))
+
   if (fdr != 1) {
-    th <- lapply(x, function(x) {
-      x[x[,'p'] <= pthresh,]
-    })
+    th <- x[x$p <= pthresh,]
   } else {
-    th <- lapply(x, function(x) {
-      x[x[,'fdr'] <= pthresh,]
-    })
+    th <- x[x$fdr <= pthresh,]
   }
 
-  th <- th[unlist(lapply(th, function(x) dim(x)[1] > 0))]
+  df <- do.call(rbind,unlist(output[['models']], recursive = F))
 
-  output <- lapply(names(th), function(x) {
+  tissue <- gsub(rownames(df), pattern = "(^\\S+)\\.(\\S+)\\.(ENSG\\S+)", replacement = "\\1")
+  trait  <- gsub(rownames(df), pattern = "(^\\S+)\\.(\\S+)\\.(ENSG\\S+)", replacement = "\\2")
+  gene   <- gsub(rownames(df), pattern = "(^\\S+)\\.(\\S+)\\.(ENSG\\S+)", replacement = "\\3")
 
-    tissue <- x
-    df     <- th[[tissue]]
-    tx     <- rownames(df)
-    txrfm  <- gsub(tx, pattern = '\\.\\d+', replacement = '')
+  rownames(df) <- NULL
+  df <- cbind(trait,tissue,gene,sig)
 
-    symbol <- try(add_gene_names(ids = txrfm))
-    # reorder symbol to conform to input
-    if (class(symbol) != "try-error") {
-      symbol <- symbol[match(txrfm, names(symbol))]
-    } else {symbol <- rep("NA", length(txrfm)); names(symbol) <- txrfm}
+  df <- df[order(df$p),]
 
-    p      <- as.numeric(df[,'p'])
-    fdr    <- as.numeric(df[,'fdr'])
-    b      <- as.numeric(df[,'b'])
+  txrfm  <- gsub(df$gene, pattern = '\\.\\d+', replacement = '')
 
-    data.frame(tissue, tx, symbol, b, fdr, p, row.names = NULL)
+  symbol <- try(add_gene_names(ids = txrfm))
+  # reorder symbol to conform to input
+  if (class(symbol) != "try-error") {
+    symbol <- symbol[match(txrfm, names(symbol))]
+  } else {symbol <- rep("NA", length(txrfm)); names(symbol) <- txrfm}
 
-    return(do.call(rbind, output))
-    })
-}
+  return(cbind(df, symbol))
+
+  }
 
 
 #' Render volcanoe plot for each element in output list.
