@@ -4,16 +4,14 @@
 \alias{volcanoeplot}
 \title{Render volcanoe plot for each element in output list.}
 \usage{
-volcanoeplot(x, fdr = T, p.thresh = 0.05, outdir = "../../output/")
+volcanoeplot(x, fdr = T, p.thresh = 0.05)
 }
 \arguments{
 \item{x}{List object returned by "run_eQTL"}
 
-\item{fdr}{Should FDR be used.}
+\item{fdr}{Should FDR corrected p-values be used for annotation.}
 
-\item{p.thresh}{Threshold for annotation gene names.}
-
-\item{outdir}{Output directory for plots.}
+\item{p.thresh}{Threshold for adding gene name label.}
 }
 \value{
 volcanoe plots
