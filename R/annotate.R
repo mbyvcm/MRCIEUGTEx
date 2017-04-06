@@ -16,14 +16,12 @@ extract_top_hits <- function(x, fdr = T, pthresh = 0.05) {
     th <- x[x$fdr <= pthresh,]
   }
 
-  df <- do.call(rbind,unlist(output[['models']], recursive = F))
+  tissue <- gsub(rownames(th), pattern = "(^\\S+)\\.(\\S+)\\.(ENSG\\S+)", replacement = "\\1")
+  trait  <- gsub(rownames(th), pattern = "(^\\S+)\\.(\\S+)\\.(ENSG\\S+)", replacement = "\\2")
+  gene   <- gsub(rownames(th), pattern = "(^\\S+)\\.(\\S+)\\.(ENSG\\S+)", replacement = "\\3")
 
-  tissue <- gsub(rownames(df), pattern = "(^\\S+)\\.(\\S+)\\.(ENSG\\S+)", replacement = "\\1")
-  trait  <- gsub(rownames(df), pattern = "(^\\S+)\\.(\\S+)\\.(ENSG\\S+)", replacement = "\\2")
-  gene   <- gsub(rownames(df), pattern = "(^\\S+)\\.(\\S+)\\.(ENSG\\S+)", replacement = "\\3")
-
-  rownames(df) <- NULL
-  df <- cbind(trait,tissue,gene,sig)
+  rownames(th) <- NULL
+  df <- cbind(trait,tissue,gene,th)
 
   df <- df[order(df$p),]
 
