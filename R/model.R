@@ -94,7 +94,7 @@ run_eqtl2 <- function(x, expression, geno, tx, restrict_coding = T) {
     write.table(t(g),'./snps.txt', quote = F, row.names = F, col.names = F, sep = "\t")
 
     df <- run_matrixEQTL(gene, cvrt)
-    return(df)
+    return(list('trait_1' = df))
 
     } else {
 
