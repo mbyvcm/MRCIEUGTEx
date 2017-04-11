@@ -71,3 +71,57 @@ distanceByPRS2 <- function(l, collapse, plot.eig) {
 
   }
 }
+
+
+#' Generate GO object
+#'
+#' @param GOTERMS Vector of GO Terms (GO:#######).
+#' @return List Ensembl gene IDS by GO Term
+#' @export
+generateSetListGO <- function(GOTERMS) {
+
+  x <- select(org.Hs.eg.db, columns = "ENSEMBL", keys = GOTERMS, keytype = 'GO')
+  x <- x[x$GO %in% GOTERMS,c('GO','ENSEMBL')]
+  x <- lapply(split(x,x$GO), function(x) x[,'ENSEMBL'])
+
+  if (all(lapply(x, length) > 10) != 1) {warning('Some sets contain fewer than ten genes!')}
+
+  return(x)
+}
+
+
+#' Run Pathways Analysis
+#'
+#' @param x List object returned by "run_eQTL".
+#' @param setList Generated using included function
+#' @return List pathways scores
+#' @export
+runPathwayAnalysis <- function(x, setList) {
+
+  out <- lapply(output[['models']], function(tissue) {
+    out <- lapply(tissue, function(trait) {
+
+      gene <- gsub(rownames(trait), pattern = '\\.\\d+$', replacement = '')
+      z    <- qnorm(trait[,'p'])
+      return(runPathwayAnalysis2(gene,z, setList))
+    })
+    return(out)
+  })
+  return(list('models' = out))
+}
+
+
+runPathwayAnalysis2 <- function(gene, z, setList) {
+
+  out <- lapply(setList, function(term) {
+
+    # 1 if gene is in catagory, 0 otherwise
+    catVar <- as.numeric(gene %in% term)
+    sum    <- summary(lm(z ~ catVar))
+    beta   <- coefficients(sum)['catVar','Estimate']
+    p      <- coefficients(sum)['catVar','Pr(>|t|)']
+    return(c("n_cat" = dim(term)[1], "n_avail" = sum(catVar), 'b' = beta, 'p' = p))
+
+  })
+  return(t(as.data.frame(out)))
+}

@@ -19,7 +19,9 @@ Depends: ggplot2,
     SNPlocs.Hsapiens.dbSNP144.GRCh37,
     MatrixEQTL,
     gridExtra,
-    ggfortify
+    ggfortify,
+    GO.db,
+    org.Hs.eg.db
 Suggests: knitr,
     rmarkdown,
     testthat
