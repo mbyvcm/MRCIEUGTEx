@@ -14,14 +14,14 @@ distanceByPRS <- function(all, collapse = F, plot.eig = F) {
     tissues <- names(all[['models']])
     out <- lapply(tissues, function(tissue) {
       message(tissue)
-      return(distanceByPRS2(all[['models']][[tissue]], collapse = F, plot.eig = plot.eig))
+      return(distanceByPRS2(all[['models']][[tissue]], collapse = F, plot.eig = plot.eig, tissue = tissue))
     })
     names(out) <- tissues
     return(out)
   }
 }
 
-distanceByPRS2 <- function(l, collapse, plot.eig) {
+distanceByPRS2 <- function(l, collapse, plot.eig, tissue = NULL) {
 
   if (length(l) < 3) {stop('n must be > 2 to calculate eigen')}
 
@@ -62,9 +62,9 @@ distanceByPRS2 <- function(l, collapse, plot.eig) {
       geom_text(aes(label=PRS))
 
     if (plot.eig == 1) {
-      p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T)
+      p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T, main = tissue)
     } else {
-      p2 <- autoplot(prcomp(x = mat), label = T)
+      p2 <- autoplot(prcomp(x = mat), label = T, main = tissue)
     }
 
     return(list(p,p2))
