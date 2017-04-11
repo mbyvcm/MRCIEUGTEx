@@ -27,7 +27,7 @@ distanceByPRS2 <- function(l, collapse) {
 
   df <- Reduce(
     function(dtf1, dtf2) merge(dtf1, dtf2, by = 'iid', all = TRUE),
-    lapply(l, function(trait) {data.frame('iid' = rownames(trait),'b' = trait$b)}
+    lapply(l, function(trait) {data.frame('iid' = rownames(trait),'b' = trait[,'b'])}
     ))
 
   rownames(df) <- df$iid
