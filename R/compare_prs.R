@@ -46,7 +46,9 @@ distanceByPRS2 <- function(l, collapse) {
     p <- ggplot(df, aes(x = C1, y = C2, color = PRS, label = Tissue)) +
       geom_text(aes(label=Tissue))
 
-    return(p)
+    p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T)
+
+    return(list(p,p2))
   } else {
 
     PRS <- rownames(df)
@@ -54,7 +56,9 @@ distanceByPRS2 <- function(l, collapse) {
     p <- ggplot(df, aes(x = C1, y = C2, color = PRS, label = PRS)) +
       geom_text(aes(label=PRS))
 
-    return(p)
+    p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T)
+
+    return(list(p,p2))
 
   }
 }
