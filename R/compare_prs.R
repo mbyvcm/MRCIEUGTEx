@@ -4,24 +4,24 @@
 #' @param collapse If true all tissues x traits are unlisted and plotted together
 #' @return List of plots
 #' @export
-distanceByPRS <- function(all, collapse = F) {
+distanceByPRS <- function(all, collapse = F, plot.eig = F) {
 
   if (collapse == 1) {
     l <- unlist(all[['models']], recursive = F)
-    return(distanceByPRS2(l, collapse = T))
+    return(distanceByPRS2(l, collapse = T, plot.eig = plot.eig))
   } else {
 
     tissues <- names(all[['models']])
     out <- lapply(tissues, function(tissue) {
       message(tissue)
-      return(distanceByPRS2(all[['models']][[tissue]], collapse = F))
+      return(distanceByPRS2(all[['models']][[tissue]], collapse = F, plot.eig = plot.eig))
     })
     names(out) <- tissues
     return(out)
   }
 }
 
-distanceByPRS2 <- function(l, collapse) {
+distanceByPRS2 <- function(l, collapse, plot.eig) {
 
   if (length(l) < 3) {stop('n must be > 2 to calculate eigen')}
 
@@ -46,7 +46,12 @@ distanceByPRS2 <- function(l, collapse) {
     p <- ggplot(df, aes(x = C1, y = C2, color = PRS, label = Tissue)) +
       geom_text(aes(label=Tissue))
 
-    p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T)
+    if (plot.eig == 1) {
+      p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T)
+    } else {
+      p2 <- autoplot(prcomp(x = mat), label = T)
+    }
+
 
     return(list(p,p2))
   } else {
@@ -56,7 +61,11 @@ distanceByPRS2 <- function(l, collapse) {
     p <- ggplot(df, aes(x = C1, y = C2, color = PRS, label = PRS)) +
       geom_text(aes(label=PRS))
 
-    p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T)
+    if (plot.eig == 1) {
+      p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T)
+    } else {
+      p2 <- autoplot(prcomp(x = mat), label = T)
+    }
 
     return(list(p,p2))
 
