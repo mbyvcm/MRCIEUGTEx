@@ -4,7 +4,7 @@
 \alias{distanceByPRS}
 \title{Plot distances between transcript profiles}
 \usage{
-distanceByPRS(all, collapse = F)
+distanceByPRS(all, collapse = F, plot.eig = F)
 }
 \arguments{
 \item{collapse}{If true all tissues x traits are unlisted and plotted together}

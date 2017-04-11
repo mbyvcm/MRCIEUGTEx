@@ -18,7 +18,8 @@ Depends: ggplot2,
     Rsamtools,
     SNPlocs.Hsapiens.dbSNP144.GRCh37,
     MatrixEQTL,
-    gridExtra
+    gridExtra,
+    ggfortify
 Suggests: knitr,
     rmarkdown,
     testthat
