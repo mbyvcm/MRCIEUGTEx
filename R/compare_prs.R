@@ -48,12 +48,13 @@ distanceByPRS2 <- function(l, collapse, plot.eig, tissue = NULL) {
 
     if (plot.eig == 1) {
       p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T)
+      return(list(p,p2))
     } else {
-      p2 <- autoplot(prcomp(x = mat), label = T)
+      return(p)
     }
 
 
-    return(list(p,p2))
+
   } else {
 
     PRS <- rownames(df)
@@ -63,11 +64,10 @@ distanceByPRS2 <- function(l, collapse, plot.eig, tissue = NULL) {
 
     if (plot.eig == 1) {
       p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T, main = tissue)
+      return(list(p,p2))
     } else {
-      p2 <- autoplot(prcomp(x = mat), label = T, main = tissue)
+      return(p)
     }
-
-    return(list(p,p2))
 
   }
 }
