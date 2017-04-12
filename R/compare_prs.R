@@ -44,6 +44,7 @@ distanceByPRS2 <- function(l, collapse, plot.eig, tissue = NULL) {
     PRS <-  gsub(rownames(df), pattern = '^(\\S+)\\.(\\S+)', replacement = '\\2')
 
     p <- ggplot(df, aes(x = C1, y = C2, color = PRS, label = Tissue)) +
+      geom_point() +
       geom_text(aes(label=Tissue))
 
     if (plot.eig == 1) {
@@ -60,6 +61,7 @@ distanceByPRS2 <- function(l, collapse, plot.eig, tissue = NULL) {
     PRS <- rownames(df)
 
     p <- ggplot(df, aes(x = C1, y = C2, color = PRS, label = PRS)) +
+      geom_point() +
       geom_text(aes(label=PRS))
 
     if (plot.eig == 1) {
