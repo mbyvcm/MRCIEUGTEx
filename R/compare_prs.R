@@ -43,9 +43,12 @@ distanceByPRS2 <- function(l, collapse, plot.eig, tissue = NULL) {
     Tissue <-     gsub(rownames(df), pattern = '^(\\S+)\\.(\\S+)', replacement = '\\1')
     PRS <-  gsub(rownames(df), pattern = '^(\\S+)\\.(\\S+)', replacement = '\\2')
 
+    isBrain <- as.factor(as.numeric(grepl(Tissue, pattern = 'Brain')))
+    
     p <- ggplot(df, aes(x = C1, y = C2, color = PRS, label = Tissue)) +
-      geom_point() +
-      geom_text(aes(label=Tissue))
+      geom_point(aes(shape = isBrain)) +
+      geom_text(aes(label=Tissue), size = 2, colour = 'black', nudge_y = -0.2)
+    
 
     if (plot.eig == 1) {
       p2 <- autoplot(prcomp(x = mat), loadings = T, loadings.label = T, label = T)
