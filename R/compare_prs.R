@@ -21,6 +21,10 @@ distanceByPRS <- function(all, collapse = F, plot.eig = F) {
   }
 }
 
+#' Plot distances between transcript profiles
+#'
+#' @return List of plots
+#' @export
 distanceByPRS2 <- function(l, collapse, plot.eig, tissue = NULL) {
 
   if (length(l) < 3) {stop('n must be > 2 to calculate eigen')}
