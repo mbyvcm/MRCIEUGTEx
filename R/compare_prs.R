@@ -22,6 +22,7 @@ distanceByPRS <- function(all, collapse = F, plot.eig = F) {
 }
 
 #' Plot distances between transcript profiles from unlisted
+#' 
 #' @param l
 #' @param collapse
 #' @param plot.eig
