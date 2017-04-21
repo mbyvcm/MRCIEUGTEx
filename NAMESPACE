@@ -3,6 +3,7 @@
 export(available_tissues)
 export(calculate_prs_gtex)
 export(distanceByPRS)
+export(distanceByPRS2)
 export(extract_query_snps_gtex)
 export(extract_top_hits)
 export(generateSetListGO)
